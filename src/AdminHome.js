@@ -31,6 +31,8 @@ const [staffl,setstaffl]=useState([])
 const [days,setdays]=useState(1)
 const [present,setpresent]=useState(0);
 const [date,setdate]=useState()
+const [tt,sett]=useState(false);
+const [ac,setac]=useState(false);
 
 function myFunction()
 {
@@ -103,16 +105,50 @@ useEffect(() => {
    
 }, []);
 
+const execute= () =>{
+  const absent = document.querySelectorAll('input[type=checkbox]:not(:checked)');
+  console.log(absent.length)
+  const present =  document.querySelectorAll('input[type=checkbox]:checked');
+  for(var i=0;i<absent.length;i++)
+  {
+    db.collection("staff_attendance").doc(absent[i].value+"_"+date).set({
+      date:date,
+      staff_id:absent[i].value,
+      present: "no",
 
+    })
+  }
+  for(var i=0;i<present.length;i++)
+  {
+    db.collection("staff_attendance").doc(present[i].value+"_"+date).set({
+      date:date,
+      staff_id:present[i].value,
+      present: "yes",
+
+    })
+  }
+
+  
+}
 const toggle3=() =>{
   setAst(true);
   setSfsearch(false)
   setStsearch(false);
   setAsf(false);
+  setac(false)
   setStaffa(false);
+  sett(false)
 }
 
-
+const toggle7 = () =>{
+  setAst(false);
+  sett(true);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  setac(false)
+  setStaffa(false);
+}
 const toggle1 = () => {
 
   db.collection('student').doc(student)
@@ -124,7 +160,7 @@ const toggle1 = () => {
         setAst(false)
         setStaffa(false);
         setAsf(false);
-       
+        setac(false)
       }
 
 );
@@ -160,7 +196,8 @@ const toggle2 = () => {
           setAst(false)
           setAsf(false);
           setStaffa(false);
-         
+          setac(false)
+          sett(false)
         }
   );
 
@@ -187,6 +224,7 @@ const toggle4 = ()=>{
   setStsearch(false);
   setAsf(true);
   setStaffa(false);
+  setac(false);
 }
 
 
@@ -196,6 +234,16 @@ const toggle5 =() =>{
   setStsearch(false);
   setAsf(false);
   setStaffa(true);
+  setac(false)
+}
+
+const toggle6 = () =>{
+  setAst(false);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  setStaffa(false);
+  setac(true);
 }
 if(stsearch===true)
 {
@@ -266,7 +314,7 @@ if(stsearch===true)
                     <ul>
                       <li><a onClick = {toggle3}>Add Student</a></li>
                       <li><a>Add Staff</a></li>
-                      <li><a>Add Class </a></li>
+                      <li><a onClick={toggle6}>Add Class </a></li>
                       <li><a>New TimeTable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
                     </ul>
@@ -290,7 +338,7 @@ if(stsearch===true)
 
             <div className="column is-9">
             <div>
-            <br/> <br/> 
+           
            
                
                       <p className="card-header-title">
@@ -313,6 +361,7 @@ if(stsearch===true)
           
          
             </div>
+            <br/> 
               <div className = "card">  
               <div className="id-card-tag" />
         <div className="id-card-tag-strip" />
@@ -426,7 +475,7 @@ else if(sfsearch===true)
                     <ul>
                     <li><a onClick = {toggle3}>Add Student</a></li>
                       <li><a onClick = {toggle4}>Add Staff</a></li>
-                      <li><a>Add Class </a></li>
+                      <li><a onClick={toggle6}>Add Class </a></li>
                       <li><a>New TimeTable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
                     </ul>
@@ -451,7 +500,7 @@ else if(sfsearch===true)
             </div>
             <div className="column is-9">
             <div>
-            <br/> <br/> 
+          
            
                
                       <p className="card-header-title">
@@ -474,6 +523,7 @@ else if(sfsearch===true)
           
          
             </div>
+         <br/>
               <div className = "card">  
               <div className="id-card-tag" />
         <div className="id-card-tag-strip" />
@@ -588,7 +638,7 @@ if(ast===true)
                   <ul>
                     
                     <li><a  onClick = {toggle4}>Add Staff</a></li>
-                    <li><a>Add Class</a></li>
+                    <li><a onClick={toggle6}>Add Class</a></li>
                     <li><a>New Timetable</a></li>
                     <li onClick = {toggle5}><a>Staff Attendance</a></li>
                   </ul>
@@ -696,7 +746,7 @@ if(asf===true)
                   <ul>
                     
                     <li><a className="is-active"  >Add Staff</a></li>
-                    <li><a>Add Class</a></li>
+                    <li><a onClick={toggle6}>Add Class</a></li>
                     <li><a>New Timetable</a></li>
                     <li onClick = {toggle5}><a>Staff Attendance</a></li>
                   </ul>
@@ -716,12 +766,13 @@ if(asf===true)
                 <li><a></a></li>
               </ul>
             </aside>
-            
+         
           </div>
           <AddStaff user = {user}/>
           
         
         </div>
+       
       </div>
     </div>
   
@@ -787,7 +838,7 @@ else if(staffa===true)
                 General
               </p>
               <ul className="menu-list">
-              <li  onClick = {()=>setAsf(false)}><a>Dashboard</a></li>
+              <li  onClick = {()=>setStaffa(false)}><a>Dashboard</a></li>
                 <li><a onClick = {toggle2}>Search Staff</a></li>
                
                 <li  onClick = {toggle1} ><a>Search Student</a></li>
@@ -801,7 +852,7 @@ else if(staffa===true)
                   <ul>
                     
                     <li><a  >Add Staff</a></li>
-                    <li><a>Add Class</a></li>
+                    <li><a onClick={toggle6}>Add Class</a></li>
                     <li><a>New Timetable</a></li>
                     <li onClick = {toggle5}><a className="is-active" >Staff Attendance</a></li>
                   </ul>
@@ -835,17 +886,19 @@ else if(staffa===true)
                 />
 
           </div>
-        
+          <div>
+            </div>
           {staffl.map(({ card, id}) => {
             return(
               <div>
             <ul className="menu-list">
-              <li><a>{card.staff_id}  <input type="checkbox"/> </a> </li>
+           <li> <a> {card.sf_name+"      "}  {card.staff_id} <input type="checkbox" value={card.staff_id} />  </a>  </li>
             </ul>
             </div>
             )
           }
           )}
+          <button onClick = {execute}>Submit</button>
             </div>
         </div>
       </div>
@@ -855,7 +908,107 @@ else if(staffa===true)
   )
   }
 
+else if(ac===true)
+{
+  return(
+    <div>
 
+   
+<div>
+      <meta charSet="utf-8" />
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Admin - Free Bulma template</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+      {/* Bulma Version 0.9.0*/}
+      <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+      <link rel="stylesheet" type="text/css" href="/css/style.css" />
+      {/* START NAV */}
+      
+      <nav className="navbar is-white">
+        <div className="container">
+          <div className="navbar-brand">
+            <Link className="navbar-item brand-text" to="/">
+              Admin
+            </Link>
+
+
+
+
+            <div className="navbar-burger burger" data-target="navMenu">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+          <div id="navMenu" className="navbar-menu">
+            <div className="navbar-start">
+             
+              <a className="navbar-item" onClick={() => auth.signOut()}>
+                Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      {/* END NAV */}
+      <div className="container">
+        <div className="columns">
+          <div className="column is-3 ">
+            <aside className="menu is-hidden-mobile">
+              <p className="label black">
+                General
+              </p>
+              <ul className="menu-list">
+              <li  onClick = {()=>setac(false)}><a>Dashboard</a></li>
+                <li><a onClick = {toggle2}>Search Staff</a></li>
+               
+                <li  onClick = {toggle1} ><a>Search Student</a></li>
+              </ul>
+              <p className="label">
+                Administration
+              </p>
+              <ul className="menu-list">
+              <li><a onClick = {toggle3}>Add Student</a></li>
+                <li>
+                  <ul>
+                    
+                    <li><a  onClick = {toggle4}>Add Staff</a></li>
+                    <li><a  className="is-active" onClick={toggle6}>Add Class</a></li>
+                    <li><a>New Timetable</a></li>
+                    <li onClick = {toggle5}><a >Staff Attendance</a></li>
+                  </ul>
+                </li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+              </ul>
+              <p className="menu-label">
+                
+              </p>
+              <ul className="menu-list">
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+              </ul>
+            </aside>
+            
+          </div>
+          <div className="column is-9">
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+  )
+}
 
     return (
       
@@ -925,7 +1078,7 @@ else if(staffa===true)
                     <ul>
                      <li onClick = {toggle3}><a>Add Student</a></li>
                       <li><a onClick= {toggle4}>Add Staff</a></li>
-                      <li><a>Add Class</a></li>
+                      <li><a onClick={toggle6}>Add Class</a></li>
                       <li><a>New Timetable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
                     </ul>

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Navbar from './Navbar';
+
 import { auth, db } from "./firebase";
 import './AddStudent.css';
-import { fn } from "moment";
-import { GiLBrick } from "react-icons/gi";
+
 
 function AddStaff() {
     const[fname,setfName]=useState('');
