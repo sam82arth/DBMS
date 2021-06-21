@@ -1,0 +1,72 @@
+.form2{
+    margin-top: 10px;
+    margin-left: 50px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+input {
+	background-color: #eee ;
+	border-radius: 20px ;
+	border: 1px solid #ffffff ;
+	padding: 12px 15px ;
+	margin: 8px 0 ;
+    width: 30% ;
+	font-family: 'Nunito', sans-serif ;
+    font-size: 3vh ;
+}
+select{
+	background-color: #eee ;
+	border-radius: 20px ;
+	border: 1px solid #ffffff ;
+	padding: 12px 15px ;
+	margin: 8px 0 ;
+    width: 30% ;
+	font-family: 'Nunito', sans-serif ;
+    font-size: 3vh ;
+}
+option{
+    background-color: #eee ;
+	border-radius: 20px ;
+	border: 1px solid #ffffff ;
+	padding: 12px 15px ;
+	margin: 8px 0 ;
+    width: 30% ;
+	font-family: 'Nunito', sans-serif ;
+    font-size: 3vh ;
+}
+
+
+.block{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+textarea{
+    min-width : 70%;
+    min-height: 200px !important;
+   
+    background-color: #eee ;
+	border-radius: 20px ;
+	border: 1px solid #ffffff ;
+	padding: 12px 15px ;
+	margin: 8px 0 ;
+	font-family: 'Nunito', sans-serif ;
+    font-size: 3vh ;
+}
+input:focus{
+    outline: none;
+}
+select:focus{
+    outline: none;
+}
+
+textarea:focus{
+    outline:none;
+}
+button{
+    margin-bottom: 30px;
+}
