@@ -27,9 +27,10 @@ const  [stsearch,setStsearch]=useState(false)
 const  [sfsearch,setSfsearch]=useState(false)
 const [sattd,setsattd]=useState([])
 const [sfattd,setsfattd]=useState([])
+const [staffl,setstaffl]=useState([])
 const [days,setdays]=useState(1)
 const [present,setpresent]=useState(0);
-
+const [date,setdate]=useState()
 
 function myFunction()
 {
@@ -59,6 +60,16 @@ useEffect(() => {
       );
     });
    
+    db.collection("staff").onSnapshot((snapshot) => {
+      setstaffl(
+        snapshot.docs.map((docu) => ({
+          id: docu.id,
+          card: docu.data(),
+  
+          
+        }))
+      );
+    });
     
 
     db.collection("job_designation")
@@ -813,8 +824,29 @@ else if(staffa===true)
             
           </div>
 
-          
+          <div className="column is-9">
+            <div>
+            <br/> <br/> 
+          <input
+                    required="true"
+                  type="date"
+                  placeholder="Date of Admission"
+                  onChange={(e) => setdate(e.target.value)}
+                />
+
+          </div>
         
+          {staffl.map(({ card, id}) => {
+            return(
+              <div>
+            <ul className="menu-list">
+              <li><a>{card.staff_id}  <input type="checkbox"/> </a> </li>
+            </ul>
+            </div>
+            )
+          }
+          )}
+            </div>
         </div>
       </div>
     </div>
