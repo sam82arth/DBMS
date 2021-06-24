@@ -57,6 +57,7 @@ function UploadMarks() {
          year:year,
          english:eng,
          maths:maths,
+         hindi:hindi,
          sanskrit:snk,
          science:sc,
          social_science:sst,
@@ -102,7 +103,10 @@ function UploadMarks() {
          percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
 
         }).then((docRef) => {
-          window.alert("Successfully updated marks");     
+          window.alert("Successfully updated marks");  
+          setsearchexam("")
+          setsearchyear("")
+          setseatchid("")   
           form.reset();
     
       })

@@ -5,7 +5,7 @@ import moment from 'moment'
 import{Link,} from "react-router-dom";
 import AddAssignment from "./AddAssignment";
 import UploadMarks from "./UploadMarks";
-
+import VerticalBarGraph from '@chartiful/react-vertical-bar-graph'
 
 
 
@@ -13,7 +13,6 @@ import UploadMarks from "./UploadMarks";
 function TeacherHome(user) {
 
 const [notice,setNotice]=useState([])
-const[jd,setJd]=useState([]);
 const [student,setStudent]=useState("sft_dummy_id");
 const [ast,setAst]=useState(false)
 const [asf,setAsf]=useState(false);
@@ -23,8 +22,6 @@ const [sta,setsta]=useState(false);
 const  [stsearch,setStsearch]=useState(false)
 const  [asg,setasg]=useState(false)
 const [sattd,setsattd]=useState([])
-const [sfattd,setsfattd]=useState([])
-const [staffl,setstaffl]=useState([])
 const [days,setdays]=useState(1)
 const [present,setpresent]=useState(0);
 const [date,setdate]=useState()
@@ -44,6 +41,11 @@ const[um,setum]=useState(false)
 const [name,setname]=useState([])
 const [attclass,setattclass]=useState([])
 const [attsection,setattsection] = useState([])
+const [vc,setvc]=useState(false)
+const [ar,setar]=useState(false)
+const [cls,setcls]=useState("")
+const [section,setsection] =useState("")
+const [as,setas]=useState("")
 
 function myFunction()
 {
@@ -62,7 +64,18 @@ useEffect(() => {
         setteacher(doc.data())
         setname(doc.data().sf_name)
     })
-    
+    db.collection("notice")
+  .orderBy("time")
+    .onSnapshot((snapshot) => {
+      setNotice(
+        snapshot.docs.map((docu) => ({
+          id: docu.id,
+          card: docu.data(),
+          time : docu.data().time.toDate(),
+          
+        }))
+      );
+    });
     db.collection("student_attendance").onSnapshot((snapshot) => {
       setsattd(
         snapshot.docs.map((docu) => ({
@@ -160,7 +173,8 @@ const toggle1 =() => {
             
             setScard(DocumentSnapshot.data())
             setStsearch(true)
-            
+            setvc(false)
+            setar(false)
             setasg(false)
             setAst(false)
             setsta(false);
@@ -194,7 +208,9 @@ const toggle1 =() => {
 const toggle2 =() =>{
     setAst(false);
     setasg(false)
+    setvc(false)
     setStsearch(false);
+    setar(false)
     setAsf(false);
     setsta(true);
     setum(false)
@@ -206,6 +222,8 @@ const toggle2 =() =>{
     setStsearch(false);
     setAsf(false);
     setsta(false);
+    setvc(false)
+    setar(false)
     setum(false)
   }
   
@@ -216,7 +234,32 @@ const toggle2 =() =>{
     setAsf(false);
     setsta(false);
     setum(true)
+    setar(false)
+    setvc(false)
   }
+
+  const toggle5=() =>{
+    setAst(false);
+    setasg(false)
+    setStsearch(false);
+    setAsf(false);
+    setsta(false);
+    setum(false)
+    setvc(true)
+    setar(false)
+  }
+
+  const toggle6=() =>{
+    setAst(false);
+    setasg(false)
+    setStsearch(false);
+    setAsf(false);
+    setsta(false);
+    setum(false);
+    setar(true)
+    setvc(false)
+  }
+
 
 
 const execute_attedance= (event) =>{
@@ -227,16 +270,17 @@ const execute_attedance= (event) =>{
    
     const absent = document.querySelectorAll('input[type=checkbox]:not(:checked)');
     const present =  document.querySelectorAll('input[type=checkbox]:checked');
-    for(var i=0;i<absent.length;i++)
+    var i,j;
+    for( j=0;j<absent.length;j++)
     {
-      db.collection("student_attendance").doc(absent[i].value+"_"+date).set({
+      db.collection("student_attendance").doc(absent[j].value+"_"+date).set({
         date:date,
-        student_id:absent[i].value,
+        student_id:absent[j].value,
         present: "no",
   
       })
     }
-    for(var i=0;i<present.length;i++)
+    for( i=0;i<present.length;i++)
     {
       db.collection("student_attendance").doc(present[i].value+"_"+date).set({
         date:date,
@@ -245,6 +289,13 @@ const execute_attedance= (event) =>{
   
       })
     }
+    if(i>=present.length && j>=absent.length)
+    {
+      setattclass("")
+      setattsection("")
+    }
+    
+  
     form.reset();
     }
 
@@ -323,6 +374,8 @@ if(stsearch===true)
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
                       <li><a onClick =  {toggle4}>Upload Marks</a></li>
+                         <li><a onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
                     </ul>
                   </li>
                   
@@ -482,6 +535,8 @@ else if(sta===true)
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
                       <li><a onClick =  {toggle4}>Upload Marks</a></li>
+                         <li><a onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
                     </ul>
                   </li>
                   
@@ -630,6 +685,8 @@ else if(asg===true){
                         <li><a>Timetable</a></li>
                         <li><a className="is-active"  onClick = {toggle3}>Add Assignment</a></li>
                         <li><a onClick =  {toggle4}>Upload Marks</a></li>
+                           <li><a onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
                       </ul>
                     </li>
                     
@@ -728,6 +785,8 @@ else if(um===true)
                       <li><a>Timetable</a></li>
                       <li><a   onClick = {toggle3}>Add Assignment</a></li>
                       <li><a  className="is-active" onClick =  {toggle4}>Upload Marks</a></li>
+                      <li><a   onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
                     </ul>
                   </li>
                   
@@ -758,7 +817,337 @@ else if(um===true)
     </div>
   )
 }
+else if(vc===true)
+{
+      return(
+        <div>
+                  <div>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Admin - Free Bulma template</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+        {/* Bulma Version 0.9.0*/}
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        {/* START NAV */}
+        
+        <nav className="navbar is-white">
+          <div className="container">
+            <div className="navbar-brand">
+              <Link className="navbar-item brand-text" to="/">
+                Admin
+              </Link>
 
+
+
+
+              <div className="navbar-burger burger" data-target="navMenu">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+            <div id="navMenu" className="navbar-menu">
+              <div className="navbar-start">
+                
+                <a className="navbar-item" onClick={() => auth.signOut()}>
+                  Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* END NAV */}
+        <div className="container">
+          <div className="columns">
+            <div className="column is-3 ">
+              <aside className="menu is-hidden-mobile">
+                <p className="label black">
+                  General
+                </p>
+                <ul className="menu-list">
+                <li onClick = {()=>setvc(false)}><a>Dashboard</a></li>
+                  <li onClick = {toggle1}><a >Search Student</a></li>
+          
+                </ul>
+                <p className="label">
+                  Administration
+                </p>
+                <ul className="menu-list">
+             
+                  <li>
+               
+                    <ul>
+                    <li ><a onClick = {toggle2} >Attendance</a></li>
+                      <li><a>Timetable</a></li>
+                      <li><a   onClick = {toggle3}>Add Assignment</a></li>
+                      <li><a  onClick =  {toggle4}>Upload Marks</a></li>
+                      <li><a  className="is-active"  onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
+                    </ul>
+                  </li>
+                  
+                </ul>
+                <p className="menu-label">
+           
+                </p>
+                <ul className="menu-list">
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                </ul>
+              </aside>
+            </div>
+
+            <div className="column is-9">
+            <form id = "form">
+            <div>
+            <br/> <br/> 
+          <input
+            placeholder="Class"
+           type="text" 
+           onChange={(e) => setcls(e.target.value)}
+         />
+          <> </>
+         <input
+
+           type="text" 
+           placeholder = "section"
+           onChange={(e) => setsection(e.target.value)}
+         />
+         <> </>
+         </div>
+         </form>
+         {sstudent.map(({ card, id}) => {
+           console.log(card)
+            if(cls===card.s_class && section === card.section)
+            {
+              console.log("hi")
+            return(
+              <div>
+            <ul className="menu-list">
+
+           <li> <a> {card.s_first_name+" "+card.s_middle_name+" "+card.s_last_name}  {card.student_id}  </a>  </li>
+   
+       
+            </ul>
+            
+            </div>
+            )
+            }
+            
+          }
+          )}
+       
+            </div>
+         
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+      )
+
+}
+else if(ar==true)
+{
+  var p = 0;
+ var d=0;
+ var a=0;
+
+ 
+  return(
+    <div>
+
+<div>
+                  <div>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Admin - Free Bulma template</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+        {/* Bulma Version 0.9.0*/}
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        {/* START NAV */}
+        
+        <nav className="navbar is-white">
+          <div className="container">
+            <div className="navbar-brand">
+              <Link className="navbar-item brand-text" to="/">
+                Admin
+              </Link>
+
+
+
+
+              <div className="navbar-burger burger" data-target="navMenu">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+            <div id="navMenu" className="navbar-menu">
+              <div className="navbar-start">
+                
+                <a className="navbar-item" onClick={() => auth.signOut()}>
+                  Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* END NAV */}
+        <div className="container">
+          <div className="columns">
+            <div className="column is-3 ">
+              <aside className="menu is-hidden-mobile">
+                <p className="label black">
+                  General
+                </p>
+                <ul className="menu-list">
+                <li onClick = {()=>setar(false)}><a>Dashboard</a></li>
+                  <li onClick = {toggle1}><a >Search Student</a></li>
+          
+                </ul>
+                <p className="label">
+                  Administration
+                </p>
+                <ul className="menu-list">
+             
+                  <li>
+               
+                    <ul>
+                    <li ><a onClick = {toggle2} >Attendance</a></li>
+                      <li><a>Timetable</a></li>
+                      <li><a   onClick = {toggle3}>Add Assignment</a></li>
+                      <li><a  onClick =  {toggle4}>Upload Marks</a></li>
+                      <li><a   onClick = {toggle5}>View Class</a></li>
+                      <li><a   className="is-active" onClick =  {toggle6}>View Attendance Record</a></li>
+                    </ul>
+                  </li>
+                  
+                </ul>
+                <p className="menu-label">
+           
+                </p>
+                <ul className="menu-list">
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                </ul>
+              </aside>
+            </div>
+
+            <div className="column is-9">
+            <form id = "form">
+            <div>
+            <br/> <br/> 
+          <input
+            placeholder="student id"
+           type="text" 
+           onChange={(e) => setas(e.target.value)}
+         />
+          <> </>
+    
+         <> </>
+         </div>
+         </form>
+
+         <a  className="is-active">PRESNT </a>
+         {sattd.map(({ attd, id}) => {
+      
+            if(as===attd.student_id )
+            {
+             if(attd.present=="yes")
+             {
+             p++
+            return(
+              <div>
+            <ul className="menu-list">
+
+           <li> <a> {attd.date}</a>  </li>
+   
+       
+            </ul>
+            
+            </div>
+            )
+             }
+            }
+            
+          }
+          )}
+          <br/>
+<a  className="is-active">ABSENT </a>
+        {sattd.map(({ attd, id}) => {
+      
+      if(as===attd.student_id )
+      {
+       if(attd.present=="no")
+       {
+       a++;
+      return(
+        <div>
+      <ul className="menu-list">
+
+     <li> <a> {attd.date}</a>  </li>
+
+ 
+      </ul>
+      
+      </div>
+      )
+       }
+      }
+      d=a+p
+      console.log(a,p,d)
+      
+    }
+    )}
+
+    <br/><br/>
+         <VerticalBarGraph
+  data={[p, a, d]}
+  labels={['Present', 'Absent', 'Days']}
+  width={500}
+  height={300}
+  barRadius={5}
+  barWidthPercentage={0.65}
+  baseConfig={{
+    hasXAxisBackgroundLines: false,
+    xAxisLabelStyle: {
+      position: 'right',
+   
+    }
+  }}
+  style={{
+    paddingVertical: 10
+  }}
+/>
+            </div>
+         
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+  
+    </div>
+  )
+
+}
     return (
         <div>
           
@@ -826,6 +1215,8 @@ else if(um===true)
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
                       <li><a onClick =  {toggle4}>Upload Marks</a></li>
+                         <li><a onClick = {toggle5}>View Class</a></li>
+                      <li><a onClick =  {toggle6}>View Attendance Record</a></li>
                   
                     </ul>
                   </li>
