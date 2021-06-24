@@ -25,6 +25,7 @@ function UploadMarks() {
     const[searchexam,setsearchexam]=useState()
     const[searchid,setseatchid]=useState();
     const[searchyear,setsearchyear]=useState(0);
+    const[updateid,setupdateid]=useState("")
 
     useEffect(() => {
   
@@ -66,7 +67,42 @@ function UploadMarks() {
          percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
 
         }).then((docRef) => {
-          window.alert("Successfully added student to the database");     
+          window.alert("Successfully added marks ");     
+          form.reset();
+    
+      })
+      .catch((error) => {
+          window.alert(error);
+      });
+      ;
+         
+        }
+        };
+
+
+  
+      const update_marks = (event) => {
+        if(form.checkValidity())
+        {
+          event.preventDefault();
+            
+      return db
+        .collection("examination").doc(updateid)
+        .update({
+        
+         english:eng,
+         maths:maths,
+         sanskrit:snk,
+         science:sc,
+         social_science:sst,
+         gk:gk,
+       
+         total:toal,
+         obtained_marks: gk+hindi+maths+sst+eng+sc+snk,
+         percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
+
+        }).then((docRef) => {
+          window.alert("Successfully updated marks");     
           form.reset();
     
       })
@@ -79,7 +115,6 @@ function UploadMarks() {
         };
   
 
-
 if(update === true)
 {
 
@@ -90,8 +125,27 @@ if(update === true)
              <li>
           
                <ul className = "listt">
-               <li ><a onClick= {()=>setupdate (false)} >New Marks Upload</a></li>
-                 <li  onClick ={()=>setupdate (true)}><a className="is-active" >Update Existing</a></li>
+               <li ><a onClick= {()=>{
+                  seteng(0)
+                  sethindi(0)
+                  setsc(0)
+                  setsst(0)
+                  setsnk(0)
+                  setmaths(0)
+                  setgk(0)
+                 setupdate (false)} 
+               }>New Marks Upload</a></li>
+                 <li  onClick ={()=>{setupdate (true)
+                  seteng(0)
+                  sethindi(0)
+                  setsc(0)
+                  setsst(0)
+                  setsnk(0)
+                  setmaths(0)
+                  setgk(0)
+                  
+
+                }}><a className="is-active" >Update Existing</a></li>
                  
                </ul>
              </li>
@@ -132,24 +186,42 @@ if(update === true)
           {exam.map(({ exam, id}) => {
             if(searchexam===exam.exam_name && searchyear === exam.year && searchid === exam.student_id)
             {
+            
+     
+                
+             
+           
+             
+                
+
             return(
               <div>
+            <a onClick ={ ()=>{
+                seteng(exam.english)
+                sethindi(exam.hindi)
+                setsc(exam.science)
+                setsst(exam.social_science)
+                setsnk(exam.sanskrit)
+                setmaths(exam.maths)
+                setgk(exam.gk)
+                setupdateid(id)
+            }}>Load Marks</a>  
                   
                   <div className ="block">
           <input
-             
+             value = {eng}
             type="number"
             placeholder="Marks in English"
             onChange={(e) => seteng(e.target.valueAsNumber)}
           />
            <input
-             
+                 value = {hindi}
              type="number"
              placeholder="Marks in Hindi"
              onChange={(e) => sethindi(e.target.valueAsNumber)}
            />
            <input
-             
+                 value = {maths}
              type="number"
              placeholder="Marks in Maths"
              onChange={(e) => setmaths(e.target.valueAsNumber)}
@@ -165,19 +237,19 @@ if(update === true)
           <div className ="block">
        
           <input
-             
+                 value = {sc}
             type="number"
             placeholder="Marks in Science"
             onChange={(e) => setsc(e.target.valueAsNumber)}
           />
          <input
-             
+                 value = {sst}
              type="number"
              placeholder="Marks in Social Science"
              onChange={(e) => setsst(e.target.valueAsNumber)}
            />
           <input
-             
+                 value = {snk}
              type="number"
              placeholder="Marks in Sanskrit"
              onChange={(e) => setsnk(e.target.valueAsNumber)}
@@ -188,7 +260,7 @@ if(update === true)
             <div className ="block">
 
             <input
-             
+                 value = {gk}
              type="number"
              placeholder="Marks in G.K."
              onChange={(e) => setgk(e.target.valueAsNumber)
@@ -214,7 +286,7 @@ if(update === true)
             </div>
           
             
-            <button type ="submit">Update Maarks</button>
+            <button type ="submit" onClick = {update_marks}>Update Maarks</button>
             </div>
             )
             }
@@ -238,7 +310,20 @@ if(update === true)
           
                <ul className = "listt">
                <li ><a  className="is-active" >New Marks Upload</a></li>
-                 <li><a onClick = {()=>setupdate (true)}>Update Existing</a></li>
+                 <li><a onClick = {()=>{setupdate (true)
+                setsearchexam("")
+                setsearchyear("")
+                setseatchid("")
+                seteng(0)
+                  sethindi(0)
+                  setsc(0)
+                  setsst(0)
+                  setsnk(0)
+                  setmaths(0)
+                  setgk(0)
+                  setupdateid("")
+                
+                }}>Update Existing</a></li>
                  
                </ul>
              </li>

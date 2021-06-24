@@ -158,8 +158,10 @@ const toggle1 = () => {
   db.collection('student').doc(student)
 .get().then((DocumentSnapshot) =>
       {
+       
         setScard(DocumentSnapshot.data())
         setStsearch(true)
+     
         setSfsearch(false)
         setAst(false)
         setStaffa(false);

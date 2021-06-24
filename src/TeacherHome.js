@@ -15,7 +15,6 @@ function TeacherHome(user) {
 const [notice,setNotice]=useState([])
 const[jd,setJd]=useState([]);
 const [student,setStudent]=useState("sft_dummy_id");
-const [staff,setStaff]=useState("gdnYGwwPlzo2vlaKGtLr");
 const [ast,setAst]=useState(false)
 const [asf,setAsf]=useState(false);
 const [card,setCard]=useState(null);
@@ -158,8 +157,10 @@ const toggle1 =() => {
     db.collection('student').doc(student)
     .get().then((DocumentSnapshot) =>
           {
+            
             setScard(DocumentSnapshot.data())
             setStsearch(true)
+            
             setasg(false)
             setAst(false)
             setsta(false);
@@ -543,10 +544,11 @@ else if(sta===true)
             </div>
             )
             }
+            
           }
           )}
           <br/>
-          <button type ="submit"onClick = {execute_attedance}>Submit</button>
+          <button type ="submit"onClick = {execute_attedance}>Submit Attendance</button>
           </form>
             </div>
          
