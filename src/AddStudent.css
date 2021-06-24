@@ -70,3 +70,7 @@ textarea:focus{
 button{
     margin-bottom: 30px;
 }
+
+.listt{
+    display:flex;
+}

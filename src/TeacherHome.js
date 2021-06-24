@@ -4,6 +4,7 @@ import './AdminHome.css'
 import moment from 'moment'
 import{Link,} from "react-router-dom";
 import AddAssignment from "./AddAssignment";
+import UploadMarks from "./UploadMarks";
 
 
 
@@ -40,8 +41,10 @@ const [science,setscience ]=useState([])
 const [gk,setgk]=useState([])
 const [maths,setmaths]=useState([])
 const[ssc,setssc]=useState([])
-const[ct,setct]=useState([])
+const[um,setum]=useState(false)
 const [name,setname]=useState([])
+const [attclass,setattclass]=useState([])
+const [attsection,setattsection] = useState([])
 
 function myFunction()
 {
@@ -78,9 +81,9 @@ useEffect(() => {
           }))
         );
       })
-
+    // db.collection"assignment"
     db.collection("class").onSnapshot((snapshot) => {
-        setclasss(
+     setclasss(
           snapshot.docs.map((docu) => ({
             id: docu.id,
             card: docu.data(), 
@@ -161,7 +164,8 @@ const toggle1 =() => {
             setAst(false)
             setsta(false);
             setAsf(false);
-            setac(false)
+            setum(false)
+
           }
     
     );
@@ -192,7 +196,7 @@ const toggle2 =() =>{
     setStsearch(false);
     setAsf(false);
     setsta(true);
-    setac(false)
+    setum(false)
   }
 
   const toggle3 =() =>{
@@ -201,7 +205,16 @@ const toggle2 =() =>{
     setStsearch(false);
     setAsf(false);
     setsta(false);
-    setac(false)
+    setum(false)
+  }
+  
+  const toggle4=() =>{
+    setAst(false);
+    setasg(false)
+    setStsearch(false);
+    setAsf(false);
+    setsta(false);
+    setum(true)
   }
 
 
@@ -308,7 +321,7 @@ if(stsearch===true)
                     <li onClick = {toggle2}><a>Attendance</a></li>
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
-                      <li><a>Upload Marks</a></li>
+                      <li><a onClick =  {toggle4}>Upload Marks</a></li>
                     </ul>
                   </li>
                   
@@ -467,7 +480,7 @@ else if(sta===true)
                     <li ><a className="is-active" >Attendance</a></li>
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
-                      <li><a>Upload Marks</a></li>
+                      <li><a onClick =  {toggle4}>Upload Marks</a></li>
                     </ul>
                   </li>
                   
@@ -492,17 +505,32 @@ else if(sta===true)
             <div>
             <br/> <br/> 
           <input
-                    required="true"
-                  type="date"
-                 
-                  onChange={(e) => setdate(e.target.value)}
-                />
+          required="true"
+           type="date" 
+           onChange={(e) => setdate(e.target.value)}
+         />
+          <> </>
+         <input
+          required="true"
+           type="text" 
+           placeholder = "class"
+           onChange={(e) => setattclass(e.target.value)}
+         />
+         <> </>
+         <input
+          required="true"
+           type="text" 
+           placeholder ="section"
+           onChange={(e) => setattsection(e.target.value)}
+         />
 
           </div>
           <div>
             </div>
           
           {sstudent.map(({ card, id}) => {
+            if(attclass===card.s_class && attsection === card.section)
+            {
             return(
               <div>
             <ul className="menu-list">
@@ -514,8 +542,10 @@ else if(sta===true)
             
             </div>
             )
+            }
           }
           )}
+          <br/>
           <button type ="submit"onClick = {execute_attedance}>Submit</button>
           </form>
             </div>
@@ -535,7 +565,105 @@ else if(asg===true){
         <div>
 
      
-            <div>
+              <div>
+          <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Admin - Free Bulma template</title>
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+          {/* Bulma Version 0.9.0*/}
+          <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+          <link rel="stylesheet" type="text/css" href="/css/style.css" />
+          {/* START NAV */}
+          
+          <nav className="navbar is-white">
+            <div className="container">
+              <div className="navbar-brand">
+                <Link className="navbar-item brand-text" to="/">
+                  Admin
+                </Link>
+
+
+
+
+                <div className="navbar-burger burger" data-target="navMenu">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+              <div id="navMenu" className="navbar-menu">
+                <div className="navbar-start">
+                  
+                  <a className="navbar-item" onClick={() => auth.signOut()}>
+                    Sign Out
+                  </a>
+                </div>
+              </div>
+            </div>
+          </nav>
+          {/* END NAV */}
+          <div className="container">
+            <div className="columns">
+              <div className="column is-3 ">
+                <aside className="menu is-hidden-mobile">
+                  <p className="label black">
+                    General
+                  </p>
+                  <ul className="menu-list">
+                  <li onClick = {()=>setasg(false)}><a>Dashboard</a></li>
+                    <li onClick = {toggle1}><a >Search Student</a></li>
+            
+                  </ul>
+                  <p className="label">
+                    Administration
+                  </p>
+                  <ul className="menu-list">
+              
+                    <li>
+                
+                      <ul>
+                      <li ><a onClick = {toggle2} >Attendance</a></li>
+                        <li><a>Timetable</a></li>
+                        <li><a className="is-active"  onClick = {toggle3}>Add Assignment</a></li>
+                        <li><a onClick =  {toggle4}>Upload Marks</a></li>
+                      </ul>
+                    </li>
+                    
+                  </ul>
+                  <p className="menu-label">
+            
+                  </p>
+                  <ul className="menu-list">
+                    <li><a></a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                  </ul>
+                </aside>
+              </div>
+
+              <div className="column is-9">
+              <AddAssignment/>
+              </div>
+          
+            </div>
+          </div>
+        </div>
+  
+  
+        </div>
+    )
+}
+else if(um===true)
+{
+  return(
+    <div>
+                  <div>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -582,7 +710,7 @@ else if(asg===true){
                   General
                 </p>
                 <ul className="menu-list">
-                <li onClick = {()=>setasg(false)}><a>Dashboard</a></li>
+                <li onClick = {()=>setum(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
           
                 </ul>
@@ -596,8 +724,8 @@ else if(asg===true){
                     <ul>
                     <li ><a onClick = {toggle2} >Attendance</a></li>
                       <li><a>Timetable</a></li>
-                      <li><a className="is-active"  onClick = {toggle3}>Add Assignment</a></li>
-                      <li><a>Upload Marks</a></li>
+                      <li><a   onClick = {toggle3}>Add Assignment</a></li>
+                      <li><a  className="is-active" onClick =  {toggle4}>Upload Marks</a></li>
                     </ul>
                   </li>
                   
@@ -618,18 +746,16 @@ else if(asg===true){
             </div>
 
             <div className="column is-9">
-            <AddAssignment/>
+            <UploadMarks/>
             </div>
          
           </div>
         </div>
       </div>
  
-  
-        </div>
-    )
+    </div>
+  )
 }
-
 
     return (
         <div>
@@ -697,7 +823,7 @@ else if(asg===true){
                      <li onClick = {toggle2}><a>Attendance</a></li>
                       <li><a>Timetable</a></li>
                       <li><a onClick = {toggle3}>Add Assignment</a></li>
-                      <li><a>Upload Marks</a></li>
+                      <li><a onClick =  {toggle4}>Upload Marks</a></li>
                   
                     </ul>
                   </li>
@@ -768,7 +894,7 @@ else if(asg===true){
                   
               } )}
                     </div>
-              </section>
+              </section> 
 
 
 
