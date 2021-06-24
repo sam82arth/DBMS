@@ -61,7 +61,7 @@ function AddStudent(user) {
         roll_no:rollno,
         s_class:s_class,
         section:section,
-        s__first_name:fname,
+        s_first_name:fname,
         s_middle_name:mname,
         s_last_name:lname,
 

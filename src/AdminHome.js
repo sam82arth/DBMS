@@ -4,20 +4,18 @@ import { auth, db } from "./firebase";
 import './AdminHome.css' 
 import moment from 'moment'
 import
-{BrowserRouter as Router,
-Switch,
-Route,
-useLocation,
+{
 Link,
 } from "react-router-dom";
 import AddStudent from "./AddStudent";
 import AddStaff from "./AddStaff"
+import AddClass from "./AddClass";
 function AdminHome(user) {
 
 const [notice,setNotice]=useState([])
 const[jd,setJd]=useState([]);
-const [student,setStudent]=useState("yjES2osduZCMysPlTUWm");
-const [staff,setStaff]=useState("gdnYGwwPlzo2vlaKGtLr");
+const [student,setStudent]=useState("sft_dummy_id");
+const [staff,setStaff]=useState("Staff_id");
 const [ast,setAst]=useState(false)
 const [asf,setAsf]=useState(false);
 const [card,setCard]=useState(null);
@@ -33,7 +31,7 @@ const [present,setpresent]=useState(0);
 const [date,setdate]=useState()
 const [tt,sett]=useState(false);
 const [ac,setac]=useState(false);
-
+const [name,setname]=useState()
 function myFunction()
 {
  
@@ -62,7 +60,7 @@ useEffect(() => {
       );
     });
    
-    db.collection("staff").onSnapshot((snapshot) => {
+    db.collection("staff").where("staff_id","!=","Staff_id").onSnapshot((snapshot) => {
       setstaffl(
         snapshot.docs.map((docu) => ({
           id: docu.id,
@@ -105,7 +103,12 @@ useEffect(() => {
    
 }, []);
 
-const execute= () =>{
+const execute= (event) =>{
+  let form  = document.getElementById('form');
+  if(form.checkValidity())
+  {
+    event.preventDefault();
+ 
   const absent = document.querySelectorAll('input[type=checkbox]:not(:checked)');
   console.log(absent.length)
   const present =  document.querySelectorAll('input[type=checkbox]:checked');
@@ -127,7 +130,8 @@ const execute= () =>{
 
     })
   }
-
+  form.reset();
+  }
   
 }
 const toggle3=() =>{
@@ -386,7 +390,7 @@ if(stsearch===true)
             </div>
             <h4 className = "category">DOB : {Scard.dob}, {Scard.gender} </h4>
             <h4 className = "category">DOA : {Scard.date_of_admission} , Student   </h4>
-            <h4 className = "category"> {Scard.s_class} {Scard.s_section} , year : {Scard.academic_year}</h4>
+            <h4 className = "category"> {Scard.s_class} {Scard.section} , year : {Scard.academic_year}</h4>
             <h4 className = "category">{Scard.contact_no}</h4>
             <h4 className = "category">{Scard.email}</h4>
             <br />
@@ -768,8 +772,9 @@ if(asf===true)
             </aside>
          
           </div>
+          <div>
           <AddStaff user = {user}/>
-          
+          </div>
         
         </div>
        
@@ -876,18 +881,20 @@ else if(staffa===true)
           </div>
 
           <div className="column is-9">
+          <form id = "form">
             <div>
             <br/> <br/> 
           <input
                     required="true"
                   type="date"
-                  placeholder="Date of Admission"
+                 
                   onChange={(e) => setdate(e.target.value)}
                 />
 
           </div>
           <div>
             </div>
+          
           {staffl.map(({ card, id}) => {
             return(
               <div>
@@ -898,7 +905,8 @@ else if(staffa===true)
             )
           }
           )}
-          <button onClick = {execute}>Submit</button>
+          <button type ="submit"onClick = {execute}>Submit</button>
+          </form>
             </div>
         </div>
       </div>
@@ -998,7 +1006,7 @@ else if(ac===true)
             
           </div>
           <div className="column is-9">
-
+                  <AddClass/>
           </div>
 
 

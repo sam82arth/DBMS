@@ -6,8 +6,7 @@ import { useHistory } from 'react-router-dom';
 import AddStudent from './AddStudent'
 import TeacherHome from './TeacherHome'
 import AdminHome from './AdminHome'
-import SearchStudent from "./SearchStudent";
-import SearchStaff from "./SearchStaff";
+
 
 function Login() {
  
@@ -46,6 +45,7 @@ function Login() {
     {
     auth.signInWithEmailAndPassword(email, password).catch((error) => {
       seterror_msg("");
+      console.log(error)
       let errorCode = error.code;
       if (
         errorCode === "auth/internal-error" ||
@@ -153,27 +153,15 @@ function Login() {
       // admin
         if(user.email==="admin@vikashighschool.com")
         {
+
           return(
             <div>
        
             <Router>
               <Switch>
-                <Route exact path="/SearchStudent" component={SearchStudent}>
-                  <SearchStudent user={user} />
-                </Route>
-                <Route exact path="/SearchStaff" component={SearchStaff}>
-                  <SearchStaff user={user} />
-                </Route>
-                <Route exact path="/Support" component={AddStudent}>
-                  <AddStudent user={user} />
-                </Route>
-
                 <Route  path="/" component={AdminHome}>
                   <AdminHome user={user}  />
                 </Route>
-                {/* <Route path="/*">
-                  <ErrorPage />
-                </Route> */}
               </Switch>
             </Router>
             </div>
@@ -189,32 +177,21 @@ function Login() {
   
             <Router>
               <Switch>
-                <Route exact path="/AddStudent" component={AddStudent}>
-                  <AddStudent username={user} />
+                <Route exact path="/" component={TeacherHome}>
+                  <TeacherHome user={user} id ={user.email.substring(0,3)}/>
                 </Route>
-                <Route exact path="/AddStaff" component={AddStudent}>
-                  <AddStudent user1={user} />
-                </Route>
-                <Route exact path="/Support" component={AddStudent}>
-                  <AddStudent username={user} />
-                </Route>
-
-                <Route exact path="/" component={AddStudent}>
-                  <AddStudent user={user} username={user} />
-                </Route>
-                {/* <Route path="/*">
-                  <ErrorPage />
-                </Route> */}
               </Switch>
             </Router>
           )
         }
         else
         {
-          auth.signOut();
+        
           // student
+          auth.signOut();
           return(
             <div>{
+              
               user.email
             }</div>
           )
@@ -280,7 +257,7 @@ function Login() {
               <input
                 className = "login_input"
                 type="password"
-                placeholder="Password"
+                placeholder="YYYY-MM-DD"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

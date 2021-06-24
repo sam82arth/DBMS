@@ -33,7 +33,7 @@ function AddStaff() {
           event.preventDefault();
             
       return db
-        .collection("student")
+        .collection("staff")
         .doc(id)
         .set({
           sf_aadhar_no: aadhar,
