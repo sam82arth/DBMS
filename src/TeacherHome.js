@@ -46,6 +46,7 @@ const [ar,setar]=useState(false)
 const [cls,setcls]=useState("")
 const [section,setsection] =useState("")
 const [as,setas]=useState("")
+const [va,setva]=useState(false)
 
 function myFunction()
 {
@@ -178,6 +179,7 @@ const toggle1 =() => {
             setasg(false)
             setAst(false)
             setsta(false);
+            setva(false)
             setAsf(false);
             setum(false)
 
@@ -214,6 +216,7 @@ const toggle2 =() =>{
     setAsf(false);
     setsta(true);
     setum(false)
+    setva(false)
   }
 
   const toggle3 =() =>{
@@ -224,6 +227,7 @@ const toggle2 =() =>{
     setsta(false);
     setvc(false)
     setar(false)
+    setva(false)
     setum(false)
   }
   
@@ -235,6 +239,7 @@ const toggle2 =() =>{
     setsta(false);
     setum(true)
     setar(false)
+    setva(false)
     setvc(false)
   }
 
@@ -247,6 +252,7 @@ const toggle2 =() =>{
     setum(false)
     setvc(true)
     setar(false)
+    setva(false)
   }
 
   const toggle6=() =>{
@@ -258,6 +264,18 @@ const toggle2 =() =>{
     setum(false);
     setar(true)
     setvc(false)
+    setva(false)
+  }
+  const toggle7 =() =>{
+    setAst(false);
+    setasg(false)
+    setvc(false)
+    setStsearch(false);
+    setar(false)
+    setAsf(false);
+    setsta(true);
+    setum(false)
+    setva(true)
   }
 
 
@@ -521,6 +539,7 @@ else if(sta===true)
                 <ul className="menu-list">
                 <li onClick = {()=>setsta(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -671,6 +690,7 @@ else if(asg===true){
                   <ul className="menu-list">
                   <li onClick = {()=>setasg(false)}><a>Dashboard</a></li>
                     <li onClick = {toggle1}><a >Search Student</a></li>
+                    <li onClick = {toggle7}><a>View My Attendance</a></li>
             
                   </ul>
                   <p className="label">
@@ -771,6 +791,7 @@ else if(um===true)
                 <ul className="menu-list">
                 <li onClick = {()=>setum(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -870,6 +891,7 @@ else if(vc===true)
                 <ul className="menu-list">
                 <li onClick = {()=>setvc(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -1015,6 +1037,7 @@ else if(ar==true)
                 <ul className="menu-list">
                 <li onClick = {()=>setar(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -1148,6 +1171,193 @@ else if(ar==true)
   )
 
 }
+
+else if(va===true)
+{
+  return (
+    <div>
+        <div>
+                  <div>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Admin - Free Bulma template</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+        {/* Bulma Version 0.9.0*/}
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        {/* START NAV */}
+        
+        <nav className="navbar is-white">
+          <div className="container">
+            <div className="navbar-brand">
+              <Link className="navbar-item brand-text" to="/">
+                Admin
+              </Link>
+
+
+
+
+              <div className="navbar-burger burger" data-target="navMenu">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+            <div id="navMenu" className="navbar-menu">
+              <div className="navbar-start">
+                
+                <a className="navbar-item" onClick={() => auth.signOut()}>
+                  Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* END NAV */}
+        <div className="container">
+          <div className="columns">
+            <div className="column is-3 ">
+              <aside className="menu is-hidden-mobile">
+                <p className="label black">
+                  General
+                </p>
+                <ul className="menu-list">
+                <li onClick = {()=>setar(false)}><a>Dashboard</a></li>
+                  <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
+          
+                </ul>
+                <p className="label">
+                  Administration
+                </p>
+                <ul className="menu-list">
+             
+                  <li>
+               
+                    <ul>
+                    <li ><a onClick = {toggle2} >Attendance</a></li>
+                      <li><a>Timetable</a></li>
+                      <li><a   onClick = {toggle3}>Add Assignment</a></li>
+                      <li><a  onClick =  {toggle4}>Upload Marks</a></li>
+                      <li><a   onClick = {toggle5}>View Class</a></li>
+                      <li><a   className="is-active" onClick =  {toggle6}>View Attendance Record</a></li>
+                    </ul>
+                  </li>
+                  
+                </ul>
+                <p className="menu-label">
+           
+                </p>
+                <ul className="menu-list">
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                </ul>
+              </aside>
+            </div>
+
+            <div className="column is-9">
+            <form id = "form">
+            <div>
+            <br/> <br/> 
+          <input
+            placeholder="student id"
+           type="text" 
+           onChange={(e) => setas(e.target.value)}
+         />
+          <> </>
+    
+         <> </>
+         </div>
+         </form>
+
+         <a  className="is-active">PRESNT </a>
+         {sattd.map(({ attd, id}) => {
+      
+            if(as===attd.student_id )
+            {
+             if(attd.present=="yes")
+             {
+             p++
+            return(
+              <div>
+            <ul className="menu-list">
+
+           <li> <a> {attd.date}</a>  </li>
+   
+       
+            </ul>
+            
+            </div>
+            )
+             }
+            }
+            
+          }
+          )}
+          <br/>
+<a  className="is-active">ABSENT </a>
+        {sattd.map(({ attd, id}) => {
+      
+      if(as===attd.student_id )
+      {
+       if(attd.present=="no")
+       {
+       a++;
+      return(
+        <div>
+      <ul className="menu-list">
+
+     <li> <a> {attd.date}</a>  </li>
+
+ 
+      </ul>
+      
+      </div>
+      )
+       }
+      }
+      d=a+p
+      console.log(a,p,d)
+      
+    }
+    )}
+
+    <br/><br/>
+         <VerticalBarGraph
+  data={[p, a, d]}
+  labels={['Present', 'Absent', 'Days']}
+  width={500}
+  height={300}
+  barRadius={5}
+  barWidthPercentage={0.65}
+  baseConfig={{
+    hasXAxisBackgroundLines: false,
+    xAxisLabelStyle: {
+      position: 'right',
+   
+    }
+  }}
+  style={{
+    paddingVertical: 10
+  }}
+/>
+            </div>
+         
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+    </div>
+  )
+}
     return (
         <div>
           
@@ -1200,8 +1410,9 @@ else if(ar==true)
                   General
                 </p>
                 <ul className="menu-list">
-                  <li><a className="is-active">Dashboard</a></li>
+                  <li><a >Dashboard</a></li>
                   <li onClick = {toggle1}><a>Search Student</a></li>
+                  <li className="is-active" onClick = {toggle6}><a>View My Attendance</a></li>
                 </ul>
                 <p className="label">
                   Administration
@@ -1249,6 +1460,9 @@ else if(ar==true)
                   </div>
                 </div>
               </section>
+
+              
+              <button className = "view_att">View Attendance</button>
 
 
               <section className="info-tiles">

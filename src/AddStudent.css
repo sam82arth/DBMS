@@ -74,3 +74,9 @@ button{
 .listt{
     display:flex;
 }
+
+.view_att{
+    position: absolute;
+right: 0;
+margin-top: 50px;
+}
