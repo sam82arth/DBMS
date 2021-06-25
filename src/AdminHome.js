@@ -897,11 +897,14 @@ else if(staffa===true)
           <div>
             </div>
           
+        
+
           {staffl.map(({ card, id}) => {
             return(
               <div>
             <ul className="menu-list">
-           <li> <a> {card.sf_name+"      "}  {card.staff_id} <input type="checkbox" value={card.staff_id} />  </a>  </li>
+           <li> <a> {card.sf_name+"      "}  {card.staff_id}   </a>  </li>
+           <input className  = "boxat"  type="checkbox" value={card.staff_id} />
             </ul>
             </div>
             )
