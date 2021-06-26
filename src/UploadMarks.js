@@ -28,7 +28,7 @@ function UploadMarks() {
     const[updateid,setupdateid]=useState("")
 
     useEffect(() => {
-  
+      console.log("hi")
         db.collection("examination").onSnapshot((snapshot) => {
           setexam(
             snapshot.docs.map((docu) => ({
@@ -55,16 +55,16 @@ function UploadMarks() {
         .add({
          exam_name:ename,
          year:year,
-         english:eng,
-         maths:maths,
-         hindi:hindi,
-         sanskrit:snk,
-         science:sc,
-         social_science:sst,
-         gk:gk,
-         student_id:sid,
-         total:toal,
-         obtained_marks: gk+hindi+maths+sst+eng+sc+snk,
+         english_marks:eng,
+         maths_marks:maths,
+         hindi_marks:hindi,
+         sanskrit_marks:snk,
+         science_marks:sc,
+         social_science_marks:sst,
+         gk_marks:gk,
+         student_id:sid.toUpperCase(),
+         total_marks:toal,
+         marks_obtained: gk+hindi+maths+sst+eng+sc+snk,
          percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
 
         }).then((docRef) => {
@@ -91,16 +91,18 @@ function UploadMarks() {
         .collection("examination").doc(updateid)
         .update({
         
-         english:eng,
-         maths:maths,
-         sanskrit:snk,
-         science:sc,
-         social_science:sst,
-         gk:gk,
-       
-         total:toal,
-         obtained_marks: gk+hindi+maths+sst+eng+sc+snk,
-         percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
+          
+          english_marks:eng,
+          maths_marks:maths,
+          hindi_marks:hindi,
+          sanskrit_marks:snk,
+          science_marks:sc,
+          social_science_marks:sst,
+          gk_marks:gk,
+     
+          total_marks:toal,
+          marks_obtained: gk+hindi+maths+sst+eng+sc+snk,
+          percentage : ((gk+hindi+maths+sst+eng+sc+snk)/toal)*100
 
         }).then((docRef) => {
           window.alert("Successfully updated marks");  
@@ -163,14 +165,15 @@ if(update === true)
           <input
             placeholder="student id"
            type="text" 
-           onChange={(e) => setseatchid(e.target.value)}
+           value={searchid.toUpperCase()}
+           onChange={(e) => setseatchid(e.target.value.toUpperCase())}
          />
           <> </>
          <input
 
            type="number" 
            placeholder = "year"
-           onChange={(e) => setsearchyear(e.target.valueAsNumber)}
+           onChange={(e) => setsearchyear(e.target.value)}
          />
          <> </>
 
@@ -188,6 +191,7 @@ if(update === true)
             </div>
           <br/><br/><br/>
           {exam.map(({ exam, id}) => {
+            console.log(exam)
             if(searchexam===exam.exam_name && searchyear === exam.year && searchid === exam.student_id)
             {
             
@@ -201,15 +205,17 @@ if(update === true)
             return(
               <div>
             <a onClick ={ ()=>{
-                seteng(exam.english)
-                sethindi(exam.hindi)
-                setsc(exam.science)
-                setsst(exam.social_science)
-                setsnk(exam.sanskrit)
-                setmaths(exam.maths)
-                setgk(exam.gk)
+                seteng(exam.english_marks)
+                sethindi(exam.hindi_marks)
+                setsc(exam.science_marks)
+                setsst(exam.social_science_marks)
+                setsnk(exam.snk_marks)
+                setmaths(exam.maths_marks)
+                setgk(exam.gk_marks)
                 setupdateid(id)
+                settotal(exam.total_marks)
             }}>Load Marks</a>  
+         
                   
                   <div className ="block">
           <input
@@ -281,7 +287,7 @@ if(update === true)
           />
           <input
             required="true"
-          
+             value={toal}
             type="number"
             placeholder="TotalMarks"
             onChange={(e) => settotal(e.target.valueAsNumber)}
@@ -345,8 +351,9 @@ if(update === true)
           <input
             required="true"
             type="text"
-            placeholder="Studnt ID"
-            onChange={(e) => setsid(e.target.value)}
+            value={sid}
+            placeholder="Student ID"
+            onChange={(e) => setsid(e.target.value.toUpperCase())}
           />
         <select  onChange={(e) => setename(e.target.value)}  placeholder="Exam"  required="true">
          <option value="" selected="selected">Exam</option>
@@ -359,7 +366,7 @@ if(update === true)
             required="true"
             type="number"
             placeholder="Year"
-            onChange={(e) => setyear(e.target.valueAsNumber)}
+            onChange={(e) => setyear(e.target.value)}
           />
           </div>
 

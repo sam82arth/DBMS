@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "./firebase";
+import VerticalBarGraph from '@chartiful/react-vertical-bar-graph'
 
 import './AdminHome.css' 
 import moment from 'moment'
@@ -10,12 +11,13 @@ Link,
 import AddStudent from "./AddStudent";
 import AddStaff from "./AddStaff"
 import AddClass from "./AddClass";
+import NewTimetable from "./NewTimetable"
 function AdminHome(user) {
 
 const [notice,setNotice]=useState([])
 const[jd,setJd]=useState([]);
-const [student,setStudent]=useState("sft_dummy_id");
-const [staff,setStaff]=useState("Staff_id");
+const [student,setStudent]=useState("STUDENT_ID");
+const [staff,setStaff]=useState("STAFF_ID");
 const [ast,setAst]=useState(false)
 const [asf,setAsf]=useState(false);
 const [card,setCard]=useState(null);
@@ -31,7 +33,16 @@ const [present,setpresent]=useState(0);
 const [date,setdate]=useState()
 const [tt,sett]=useState(false);
 const [ac,setac]=useState(false);
+const [sstudent,setsstudent]=useState([])
+const [as,setas]=useState("")
+const [cls,setcls]=useState("")
+const [section,setsection] =useState("")
 const [name,setname]=useState()
+const[ename,setename]=useState()
+const[year,setyear]=useState()
+const[exam,setexam]=useState()
+const [ar,setar]=useState(false)
+const [vc,setvc]=useState(false)
 function myFunction()
 {
  
@@ -59,8 +70,15 @@ useEffect(() => {
         }))
       );
     });
-   
-    db.collection("staff").where("staff_id","!=","Staff_id").onSnapshot((snapshot) => {
+    db.collection("examination").onSnapshot((snapshot) => {
+                setexam(
+                  snapshot.docs.map((docu) => ({
+                    id: docu.id,
+                    exam: docu.data(), 
+                  }))
+                );
+              })
+    db.collection("staff").where("staff_id","!=","STAFF_ID").onSnapshot((snapshot) => {
       setstaffl(
         snapshot.docs.map((docu) => ({
           id: docu.id,
@@ -70,7 +88,14 @@ useEffect(() => {
         }))
       );
     });
-    
+    db.collection("student").where("student_id" ,"!=","STUDENT_ID").onSnapshot((snapshot) => {
+      setsstudent(
+        snapshot.docs.map((docu) => ({
+          id: docu.id,
+          card: docu.data(), 
+        }))
+      );
+    })
 
     db.collection("job_designation")
     .onSnapshot((snapshot) => {
@@ -92,7 +117,7 @@ useEffect(() => {
       );
     })
 
-    db.collection("staff_attedance").onSnapshot((snapshot) => {
+    db.collection("staff_attendance").onSnapshot((snapshot) => {
       setsfattd(
         snapshot.docs.map((docu) => ({
           id: docu.id,
@@ -102,6 +127,7 @@ useEffect(() => {
     })
    
 }, []);
+
 
 const execute= (event) =>{
   let form  = document.getElementById('form');
@@ -116,7 +142,7 @@ const execute= (event) =>{
   {
     db.collection("staff_attendance").doc(absent[i].value+"_"+date).set({
       date:date,
-      staff_id:absent[i].value,
+      staff_id:absent[i].value.toUpperCase(),
       present: "no",
 
     })
@@ -125,7 +151,7 @@ const execute= (event) =>{
   {
     db.collection("staff_attendance").doc(present[i].value+"_"+date).set({
       date:date,
-      staff_id:present[i].value,
+      staff_id:present[i].value.toUpperCase(),
       present: "yes",
 
     })
@@ -134,25 +160,8 @@ const execute= (event) =>{
   }
   
 }
-const toggle3=() =>{
-  setAst(true);
-  setSfsearch(false)
-  setStsearch(false);
-  setAsf(false);
-  setac(false)
-  setStaffa(false);
-  sett(false)
-}
 
-const toggle7 = () =>{
-  setAst(false);
-  sett(true);
-  setSfsearch(false)
-  setStsearch(false);
-  setAsf(false);
-  setac(false)
-  setStaffa(false);
-}
+
 const toggle1 = () => {
 
   db.collection('student').doc(student)
@@ -161,12 +170,15 @@ const toggle1 = () => {
        
         setScard(DocumentSnapshot.data())
         setStsearch(true)
-     
+        setyear("")
+        setename("")
+        sett(false)
         setSfsearch(false)
         setAst(false)
         setStaffa(false);
         setAsf(false);
         setac(false)
+        setvc(false)
       }
 
 );
@@ -204,6 +216,8 @@ const toggle2 = () => {
           setStaffa(false);
           setac(false)
           sett(false)
+          setvc(false)
+          setar(false)
         }
   );
 
@@ -222,15 +236,27 @@ const toggle2 = () => {
   setdays(temp)
 
 }
-
+const toggle3=() =>{
+  setAst(true);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  setac(false)
+  setStaffa(false);
+  sett(false)
+  setar(false)
+  setvc(false)
+}
 
 const toggle4 = ()=>{
   setAst(false);
   setSfsearch(false)
   setStsearch(false);
   setAsf(true);
+  setac(false)
   setStaffa(false);
-  setac(false);
+  setar(false)
+  setvc(false)
 }
 
 
@@ -239,21 +265,69 @@ const toggle5 =() =>{
   setSfsearch(false)
   setStsearch(false);
   setAsf(false);
-  setStaffa(true);
   setac(false)
+  setStaffa(true);
+  setar(false)
+  setvc(false)
+  sett(false)
 }
 
-const toggle6 = () =>{
+const toggle6=() =>{
+  setAst(false);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  sett(false)
+  setac(false)
+  setStaffa(false);
+  setar(false)
+  setvc(false)
+  setac(true)
+}
+
+const toggle7 = () =>{
   setAst(false);
   setSfsearch(false)
   setStsearch(false);
   setAsf(false);
   setStaffa(false);
-  setac(true);
+  setvc(false)
+  setac(false);
+  setas("")
+  sett(false)
+  setar(true)
 }
+const toggle8 = () =>{
+  setAst(false);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  setStaffa(false);
+  setvc(false)
+  setac(false);
+  setas("")
+  sett(true)
+  setar(false)
+}
+
+
+
+const toglle9 = () =>{
+  setAst(false);
+  sett(false);
+  setSfsearch(false)
+  setStsearch(false);
+  setAsf(false);
+  setac(false)
+  sett(false)
+  setvc(true)
+  setar(false)
+  setStaffa(false);
+}
+
 if(stsearch===true)
 {
-    
+  
     return (
       <div>
 
@@ -274,7 +348,7 @@ if(stsearch===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Admin Portal
               </Link>
 
 
@@ -321,8 +395,10 @@ if(stsearch===true)
                       <li><a onClick = {toggle3}>Add Student</a></li>
                       <li><a>Add Staff</a></li>
                       <li><a onClick={toggle6}>Add Class </a></li>
-                      <li><a>New TimeTable</a></li>
+                      <li><a onClick={toggle8}>New TimeTable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                      <li onClick={toggle7}><a>Attendance Report</a></li>
+                      <li onClick = {toglle9}><a>View Class</a></li>
                     </ul>
                   </li>
                   
@@ -353,7 +429,7 @@ if(stsearch===true)
                         <div className = "searchbox">
 
                     
-                          <input className="input_s" type="text" placeholder   onChange={(e) => setStudent(e.target.value)} value = {student}/>
+                          <input className="input_s" type="text" placeholder   onChange={(e) => setStudent(e.target.value.toUpperCase())} value = {student}/>
                           <span className="icon is-medium is-left">
                            
                           </span>
@@ -400,9 +476,122 @@ if(stsearch===true)
           </div>
         </div>
               </div>
-             
+              <div className="column is-9">
+        <br/><br/>
+        <div className ="flexi">
+
+        <div>
+           <input
+            required="true"
+            type="text"
+            value={student}
+            disabled="true"
+          
+          />
+          </div>
+            <div>
+
+            <select  onChange={(e) => setename(e.target.value)}  placeholder="Exam"  required="true">
+         <option value="" selected="selected">Exam</option>
+          <option value="Internal 1">Internal 1</option>
+          <option value="Internal 2">Internal 2</option>
+          <option value="Final">Final</option>
+
+          </select>
+          </div>
+
+          <div>
+           <input
+            required="true"
+            type="number"
+            placeholder="Year"
+            onChange={(e) => setyear(e.target.value)}
+          />
+          </div>
+          </div>
+          <br/><br/>
+          <table className="table is-fullwidth is-striped">
+        <tbody>
+           
+          {exam.map(({ exam,time}) => {
+              console.log(exam)
+              if(exam.student_id===student&&exam.exam_name===ename&&exam.year===year)
+              {
+                  return(
+                      
+                      <section className ="wid"> 
+               <tr>
+                            <td width = "40%">ENGLISH</td>
+                              <td width = "60%"className="level-top"></td>
+      
+                              <td>{exam.english_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">HINDI</td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.hindi_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">MATHS</td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.maths_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">SCIENCE</td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.science_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">SOCIAL SCIENCE</td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.social_science_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">GK </td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.gk_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">OBTAINED MARKS </td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.marks_obtained}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">TOTAL MARKS </td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.total_marks}</td>
+        
+                </tr>
+                <tr>
+                            <td width = "25%">PERCENTAGE </td>
+                              <td width = "15%"className="level-top"></td>
+      
+                              <td>{exam.percentage}</td>
+        
+                </tr>
+                </section>
+            )
+               }
+             })}
+             </tbody>
+             </table>
+    </div>
               </div>
-         
+    
           </div>
         </div>
       </div>
@@ -410,10 +599,13 @@ if(stsearch===true)
   
         </div>
     );
+   
+    
   
 }
 else if(sfsearch===true)
   {
+    
     var pos = jd.map(function(e) { return e.job_id; }).indexOf(card.job_id);
  
     return (
@@ -435,7 +627,7 @@ else if(sfsearch===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Admin Portal
               </Link>
 
 
@@ -482,8 +674,10 @@ else if(sfsearch===true)
                     <li><a onClick = {toggle3}>Add Student</a></li>
                       <li><a onClick = {toggle4}>Add Staff</a></li>
                       <li><a onClick={toggle6}>Add Class </a></li>
-                      <li><a>New TimeTable</a></li>
+                      <li><a onClick={toggle8}>New TimeTable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                      <li onClick={toggle7}><a>Attendance Report</a></li>
+                      <li onClick = {toglle9}><a>View Class</a></li>
                     </ul>
                   </li>
                  
@@ -515,7 +709,7 @@ else if(sfsearch===true)
                         <div className = "searchbox">
 
                     
-                          <input className="input_s" type="text" placeholder   onChange={(e) => setStaff(e.target.value)}  defaultValue= {staff}/>
+                          <input className="input_s" type="text" placeholder   onChange={(e) => setStaff(e.target.value.toUpperCase)}  defaultValue= {staff}/>
                           <span className="icon is-medium is-left">
                            
                           </span>
@@ -561,8 +755,9 @@ else if(sfsearch===true)
           </div>
         </div>
               </div>
-             
-              </div>
+      
+         
+          </div>
           
           </div>
         </div>
@@ -599,7 +794,7 @@ if(ast===true)
         <div className="container">
           <div className="navbar-brand">
             <Link className="navbar-item brand-text" to="/">
-              Admin
+              Admin Portal
             </Link>
 
 
@@ -645,8 +840,10 @@ if(ast===true)
                     
                     <li><a  onClick = {toggle4}>Add Staff</a></li>
                     <li><a onClick={toggle6}>Add Class</a></li>
-                    <li><a>New Timetable</a></li>
+                    <li><a onClick={toggle8}>New Timetable</a></li>
                     <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                    <li onClick={toggle7}><a>Attendance Report</a></li>
+                    <li onClick = {toglle9}><a>View Class</a></li>
                   </ul>
                 </li>
                 <li><a></a></li>
@@ -707,7 +904,7 @@ if(asf===true)
         <div className="container">
           <div className="navbar-brand">
             <Link className="navbar-item brand-text" to="/">
-              Admin
+              Admin Portal
             </Link>
 
 
@@ -753,8 +950,10 @@ if(asf===true)
                     
                     <li><a className="is-active"  >Add Staff</a></li>
                     <li><a onClick={toggle6}>Add Class</a></li>
-                    <li><a>New Timetable</a></li>
+                    <li><a onClick={toggle8}>New Timetable</a></li>
                     <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                    <li onClick={toggle7}><a>Attendance Report</a></li>
+                    <li onClick = {toglle9}><a>View Class</a></li>
                   </ul>
                 </li>
                 <li><a></a></li>
@@ -791,6 +990,117 @@ if(asf===true)
   );
 }
 
+else 
+if(tt===true)
+{
+
+  //ADD Staff
+  return (
+    <div>
+
+<div>
+      <meta charSet="utf-8" />
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Admin - Free Bulma template</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+      {/* Bulma Version 0.9.0*/}
+      <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+      <link rel="stylesheet" type="text/css" href="/css/style.css" />
+      {/* START NAV */}
+      
+      <nav className="navbar is-white">
+        <div className="container">
+          <div className="navbar-brand">
+            <Link className="navbar-item brand-text" to="/">
+              Admin Portal
+            </Link>
+
+
+
+
+            <div className="navbar-burger burger" data-target="navMenu">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+          <div id="navMenu" className="navbar-menu">
+            <div className="navbar-start">
+             
+              <a className="navbar-item" onClick={() => auth.signOut()}>
+                Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      {/* END NAV */}
+      <div className="container">
+        <div className="columns">
+          <div className="column is-3 ">
+            <aside className="menu is-hidden-mobile">
+              <p className="label black">
+                General
+              </p>
+              <ul className="menu-list">
+              <li  onClick = {()=>sett(false)}><a>Dashboard</a></li>
+                <li><a onClick = {toggle2}>Search Staff</a></li>
+               
+                <li  onClick = {toggle1} ><a>Search Student</a></li>
+              </ul>
+              <p className="label">
+                Administration
+              </p>
+              <ul className="menu-list">
+              <li><a onClick = {toggle3}>Add Student</a></li>
+                <li>
+                  <ul>
+                    
+                    <li><a  >Add Staff</a></li>
+                    <li><a onClick={toggle6}>Add Class</a></li>
+                    <li><a className="is-active"  onClick={toggle8}>New Timetable</a></li>
+                    <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                    <li onClick={toggle7}><a>Attendance Report</a></li>
+                    <li onClick = {toglle9}><a>View Class</a></li>
+                  </ul>
+                </li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+              </ul>
+              <p className="menu-label">
+                
+              </p>
+              <ul className="menu-list">
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+                <li><a></a></li>
+              </ul>
+            </aside>
+         
+          </div>
+          <div>
+          <NewTimetable />
+          </div>
+        
+        </div>
+       
+      </div>
+    </div>
+  
+
+
+
+       
+      </div>
+  );
+}
+
+
 else if(staffa===true)
 {
   return(
@@ -814,7 +1124,7 @@ else if(staffa===true)
         <div className="container">
           <div className="navbar-brand">
             <Link className="navbar-item brand-text" to="/">
-              Admin
+              Admin Portal
             </Link>
 
 
@@ -860,8 +1170,10 @@ else if(staffa===true)
                     
                     <li><a  >Add Staff</a></li>
                     <li><a onClick={toggle6}>Add Class</a></li>
-                    <li><a>New Timetable</a></li>
+                    <li><a onClick={toggle8}>New Timetable</a></li>
                     <li onClick = {toggle5}><a className="is-active" >Staff Attendance</a></li>
+                    <li onClick={toggle7}><a>Attendance Report</a></li>
+                    <li onClick = {toglle9}><a>View Class</a></li>
                   </ul>
                 </li>
                 <li><a></a></li>
@@ -943,7 +1255,7 @@ else if(ac===true)
         <div className="container">
           <div className="navbar-brand">
             <Link className="navbar-item brand-text" to="/">
-              Admin
+              Admin Portal
             </Link>
 
 
@@ -989,8 +1301,10 @@ else if(ac===true)
                     
                     <li><a  onClick = {toggle4}>Add Staff</a></li>
                     <li><a  className="is-active" onClick={toggle6}>Add Class</a></li>
-                    <li><a>New Timetable</a></li>
+                    <li><a onClick={toggle8}>New Timetable</a></li>
                     <li onClick = {toggle5}><a >Staff Attendance</a></li>
+                    <li onClick={toggle7}><a>Attendance Report</a></li>
+                    <li onClick = {toglle9}><a>View Class</a></li>
                   </ul>
                 </li>
                 <li><a></a></li>
@@ -1022,6 +1336,356 @@ else if(ac===true)
     </div>
   )
 }
+else if(ar==true)
+{
+  var p = 0;
+ var d=0;
+ var a=0;
+
+ 
+  return(
+    <div>
+
+<div>
+                  <div>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Admin - Free Bulma template</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+        {/* Bulma Version 0.9.0*/}
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        {/* START NAV */}
+        
+        <nav className="navbar is-white">
+          <div className="container">
+            <div className="navbar-brand">
+              <Link className="navbar-item brand-text" to="/">
+                Admin Portal
+              </Link>
+
+
+
+
+              <div className="navbar-burger burger" data-target="navMenu">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+            <div id="navMenu" className="navbar-menu">
+              <div className="navbar-start">
+                
+                <a className="navbar-item" onClick={() => auth.signOut()}>
+                  Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* END NAV */}
+        <div className="container">
+          <div className="columns">
+            <div className="column is-3 ">
+              <aside className="menu is-hidden-mobile">
+                <p className="label black">
+                  General
+                </p>
+                <ul className="menu-list">
+                  <li><a onClick = {()=> setar(false)}>Dashboard</a></li>
+                  <li onClick = {toggle2}><a>Search Staff</a></li>
+                  <li onClick = {toggle1}><a>Search Student</a></li>
+                </ul>
+                <p className="label">
+                  Administration
+                </p>
+                <ul className="menu-list">
+                
+                  <li>
+                 
+                    <ul>
+                     <li onClick = {toggle3}><a>Add Student</a></li>
+                      <li><a onClick= {toggle4}>Add Staff</a></li>
+                      <li><a onClick={toggle6}>Add Class</a></li>
+                      <li><a onClick={toggle8}>New Timetable</a></li>
+                      <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                      <li onClick={toggle7}><a className="is-active" > Attendance Report</a></li>
+                      <li onClick = {toglle9}><a>View Class</a></li>
+                    </ul>
+                  </li>
+                
+                </ul>
+                <p className="menu-label">
+           
+                </p>
+                <ul className="menu-list">
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                </ul>
+              </aside>
+            </div>
+
+            <div className="column is-9">
+            <form id = "form">
+            <div>
+            <br/> <br/> 
+          <input
+            placeholder="staff id"
+           type="text" 
+           value={as}
+           onChange={(e) => setas(e.target.value.toUpperCase())}
+         />
+          <> </>
+    
+         <> </>
+         </div>
+         </form>
+<div className = "atflex">
+  <div>
+         <a  className="is-active">PRESNT </a>
+         {sfattd.map(({ attd, id}) => {
+           console.log(attd)
+           console.log(as)
+            if(as===attd.staff_id )
+            {
+             if(attd.present=="yes")
+             {
+             p++
+            return(
+              <div>
+            <ul className="menu-list">
+
+           <li> <a> {attd.date}</a>  </li>
+   
+       
+            </ul>
+            
+            </div>
+            )
+             }
+            }
+            
+          }
+          )}
+          <br/>
+       </div>
+          <div>
+<a  className="is-active">ABSENT </a>
+        {sfattd.map(({ attd, id}) => {
+      
+      if(as===attd.staff_id )
+      {
+       if(attd.present=="no")
+       {
+       a++;
+      return(
+        <div>
+      <ul className="menu-list">
+
+     <li> <a> {attd.date}</a>  </li>
+
+ 
+      </ul>
+      
+      </div>
+      )
+       }
+      }
+      d=a+p
+    
+      
+    }
+    )}
+    </div>
+</div>
+    <br/><br/>
+    <div className= "graph" >
+         <VerticalBarGraph
+        
+  data={[p, a, d]}
+  labels={['Present', 'Absent', 'Days']}
+  width={500}
+  height={300}
+  barRadius={5}
+  barWidthPercentage={0.65}
+  baseConfig={{
+    hasXAxisBackgroundLines: false,
+    xAxisLabelStyle: {
+      position: 'right',
+   
+    }
+  }}
+  style={{
+    paddingVertical: 10
+  }}
+/></div>
+            </div>
+         
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+  
+    </div>
+  )
+
+}
+
+else if(vc===true)
+{
+      return(
+        <div>
+                  <div>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Admin - Free Bulma template</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" />
+        {/* Bulma Version 0.9.0*/}
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        {/* START NAV */}
+        
+        <nav className="navbar is-white">
+          <div className="container">
+            <div className="navbar-brand">
+              <Link className="navbar-item brand-text" to="/">
+                Admin Portal
+              </Link>
+
+
+
+
+              <div className="navbar-burger burger" data-target="navMenu">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+            <div id="navMenu" className="navbar-menu">
+              <div className="navbar-start">
+                
+                <a className="navbar-item" onClick={() => auth.signOut()}>
+                  Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* END NAV */}
+        <div className="container">
+          <div className="columns">
+            <div className="column is-3 ">
+              <aside className="menu is-hidden-mobile">
+                <p className="label black">
+                  General
+                </p>
+                <ul className="menu-list">
+                <li onClick = {()=>setvc(false)}><a>Dashboard</a></li>
+                  <li onClick = {toggle1}><a >Search Student</a></li>
+                  <li onClick = {toggle1}><a>Search Student</a></li>
+          
+                </ul>
+                <p className="label">
+                  Administration
+                </p>
+                <ul className="menu-list">
+             
+                  <li>
+               
+                    <ul>
+                    <li onClick = {toggle3}><a>Add Student</a></li>
+                      <li><a onClick= {toggle4}>Add Staff</a></li>
+                      <li><a onClick={toggle6}>Add Class</a></li>
+                      <li><a onClick={toggle8}>New Timetable</a></li>
+                      <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                      <li onClick={toggle7}><a>Attendance Report</a></li>
+                      <li onClick = {toglle9}><a className = "is-active">View Class</a></li>
+                    </ul>
+                  </li>
+                  
+                </ul>
+                <p className="menu-label">
+           
+                </p>
+                <ul className="menu-list">
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                  <li><a></a></li>
+                </ul>
+              </aside>
+            </div>
+
+            <div className="column is-9">
+            <form id = "form">
+            <div>
+            <br/> <br/> 
+            <div className ="flexi">
+              <div>
+          <input
+            placeholder="Class"
+           type="text" 
+           onChange={(e) => setcls(e.target.value)}
+         />
+          <> </>
+          </div>
+          <div>
+         <input
+
+           type="text" 
+           placeholder = "section"
+           value={section}
+           onChange={(e) => setsection(e.target.value.toUpperCase())}
+         />
+         </div>
+            </div>
+         <> </>
+         </div>
+         </form>
+         {sstudent.map(({ card, id}) => {
+           console.log(card)
+            if(cls===card.s_class && section === card.section)
+            {
+            
+            return(
+              <div>
+            <ul className="menu-list">
+
+           <li> <a> {card.s_first_name+" "+card.s_middle_name+" "+card.s_last_name+"            "}{card.student_id}  {card.roll_no}</a>  </li>
+   
+       
+            </ul>
+            
+            </div>
+            )
+            }
+            
+          }
+          )}
+       
+            </div>
+         
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+      )
+
+}
 
     return (
       
@@ -1046,7 +1710,7 @@ else if(ac===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Admin Portal
               </Link>
 
 
@@ -1092,8 +1756,10 @@ else if(ac===true)
                      <li onClick = {toggle3}><a>Add Student</a></li>
                       <li><a onClick= {toggle4}>Add Staff</a></li>
                       <li><a onClick={toggle6}>Add Class</a></li>
-                      <li><a>New Timetable</a></li>
+                      <li><a onClick={toggle8}>New Timetable</a></li>
                       <li onClick = {toggle5}><a>Staff Attendance</a></li>
+                      <li onClick={toggle7}><a>Attendance Report</a></li>
+                      <li onClick = {toglle9}><a>View Class</a></li>
                     </ul>
                   </li>
                 

@@ -33,19 +33,19 @@ function AddClass() {
             
       return db
         .collection("class")
-        .doc(cclass+"_"+section)
+        .doc(cclass+"_"+section.toUpperCase())
         .set({
           cl_class: cclass,
-          cl_section:section,
-          class_teacher_id: ct,
-          english_staff_id: eng,
-          gk_staff_id:gk,
-          hindi_staff_id: hindi,
-          maths_staff_id:maths,
-          scienec_staff_id:sc,
-          sbk_staff_id:snk,
-          social_science_staff_id:sst,
-          monitor_id:monitor,
+          cl_section:section.toUpperCase(),
+          class_teacher_id: ct.toUpperCase(),
+          english_staff_id: eng.toUpperCase(),
+          gk_staff_id:gk.toUpperCase(),
+          hindi_staff_id: hindi.toUpperCase(),
+          maths_staff_id:maths.toUpperCase(),
+          scienec_staff_id:sc.toUpperCase(),
+          sbk_staff_id:snk.toUpperCase(),
+          social_science_staff_id:sst.toUpperCase(),
+          monitor_id:monitor.toUpperCase(),
           strength:strength
           
   
@@ -81,7 +81,8 @@ function AddClass() {
                        
                     type="text"
                     placeholder="Section"
-                    onChange={(e) => setsection(e.target.value)}
+                    value={section}
+                    onChange={(e) => setsection(e.target.value).toUpperCase()}
                   />
                    <input
                     required="true"

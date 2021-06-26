@@ -42,11 +42,11 @@ function AddStudent(user) {
             console.log(dob)
     return db
       .collection("student")
-      .doc(id)
+      .doc(id.toUpperCase())
       .set({
         aadhar_no: aadhar,
         academic_year: year,
-        student_id: id,
+        student_id: id.toUpperCase(),
         address: address,
         blood_group : bg,
         contact_no:mobile,
@@ -60,7 +60,7 @@ function AddStudent(user) {
         gender:gender,
         roll_no:rollno,
         s_class:s_class,
-        section:section,
+        section:section.toUpperCase(),
         s_first_name:fname,
         s_middle_name:mname,
         s_last_name:lname,
@@ -141,8 +141,9 @@ function AddStudent(user) {
                 <input
                     required="true"
                   type="text"
+                  value={id}
                   placeholder="Student Id"
-                  onChange={(e) => setId(e.target.value)}
+                  onChange={(e) => setId(e.target.value.toUpperCase())}
                 />
                  <input
                   required="true"

@@ -45,7 +45,7 @@ return db
   .collection("assignment")
   .add({
   
-    section :section,
+    section :section.toUpperCase(),
     assignment: assignment,
     timestamp : firebase.firestore.FieldValue.serverTimestamp(),
     class:classs
@@ -82,10 +82,10 @@ return db
               onChange={(e) => setclasss(e.target.value)}
             />
              <input
-                 
+                 value={section}
               type="text"
               placeholder="Section"
-              onChange={(e) => setsection(e.target.value)}
+              onChange={(e) => setsection(e.target.value.toUpperCase())}
             />
            
             </div>
@@ -94,7 +94,7 @@ return db
             <textarea
                 required="true"
               type="text"
-              placeholder="Assignemt"
+              placeholder="Assignment"
               onChange={(e) => setassignment(e.target.value)}
             />
             
@@ -131,8 +131,9 @@ return db
                       <input
                       required="true"
                      type="text" 
+                     value={asgsection}
                      placeholder ="section"
-                      onChange={(e) => setasgsection(e.target.value)}
+                      onChange={(e) => setasgsection(e.target.value.toUpperCase())}
                         />
                          <br/>
                          <br/>
@@ -147,7 +148,7 @@ return db
                                   
                                 </tr>
                           {assignmentl.map(({ card,time,id}) => {
-                            if(card.class===asgclass && card.section===asgsection)
+                            if(card.class===asgclass && asgsection==card.section)
                             {
                                  return(
                                   <tr>

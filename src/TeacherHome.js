@@ -6,7 +6,7 @@ import{Link,} from "react-router-dom";
 import AddAssignment from "./AddAssignment";
 import UploadMarks from "./UploadMarks";
 import VerticalBarGraph from '@chartiful/react-vertical-bar-graph'
-
+import './AdminHome.css'
 
 
 
@@ -37,6 +37,7 @@ const [science,setscience ]=useState([])
 const [gk,setgk]=useState([])
 const [maths,setmaths]=useState([])
 const[ssc,setssc]=useState([])
+const [sfattd,setsfattd]=useState([])
 const[um,setum]=useState(false)
 const [name,setname]=useState([])
 const [attclass,setattclass]=useState([])
@@ -61,9 +62,9 @@ function myFunction()
 
 useEffect(() => {
   
-    db.collection("staff").doc(user.user.email.substring(0,3)).get().then((doc)=>{
+    db.collection("staff").doc(user.user.email.substring(0,10)).get().then((doc)=>{
         setteacher(doc.data())
-        setname(doc.data().sf_name)
+        // setname(doc.data().sf_name)
     })
     db.collection("notice")
   .orderBy("time")
@@ -85,7 +86,14 @@ useEffect(() => {
         }))
       );
     })
-
+    db.collection("staff_attendance").onSnapshot((snapshot) => {
+      setsfattd(
+        snapshot.docs.map((docu) => ({
+          id: docu.id,
+          attd: docu.data(), 
+        }))
+      );
+    })
     db.collection("student").where("student_id" ,"!=","student_id").onSnapshot((snapshot) => {
         setsstudent(
           snapshot.docs.map((docu) => ({
@@ -273,7 +281,7 @@ const toggle2 =() =>{
     setStsearch(false);
     setar(false)
     setAsf(false);
-    setsta(true);
+    setsta(false);
     setum(false)
     setva(true)
   }
@@ -345,7 +353,7 @@ if(stsearch===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -378,6 +386,7 @@ if(stsearch===true)
                 <ul className="menu-list">
                 <li onClick = {()=>setStsearch(false)}><a>Dashboard</a></li>
                   <li><a className="is-active">Search Student</a></li>
+                  <li onClick = {toggle7}><a>View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -424,7 +433,7 @@ if(stsearch===true)
                         <div className = "searchbox">
 
                     
-                          <input className="input_s" type="text" placeholder   onChange={(e) => setStudent(e.target.value)} value = {student}/>
+                          <input className="input_s" type="text" placeholder   onChange={(e) => setStudent(e.target.value.toUpperCase())} value = {student}/>
                           <span className="icon is-medium is-left">
                            
                           </span>
@@ -506,7 +515,7 @@ else if(sta===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -595,8 +604,9 @@ else if(sta===true)
          <input
           required="true"
            type="text" 
+           value={attsection}
            placeholder ="section"
-           onChange={(e) => setattsection(e.target.value)}
+           onChange={(e) => setattsection(e.target.value.toUpperCase() )}
          />
 
           </div>
@@ -604,7 +614,7 @@ else if(sta===true)
             </div>
           
           {sstudent.map(({ card, id}) => {
-            if(attclass===card.s_class && attsection === card.section)
+            if(attclass===card.s_class && attsection=== card.section)
             {
             return(
               <div>
@@ -657,7 +667,7 @@ else if(asg===true){
             <div className="container">
               <div className="navbar-brand">
                 <Link className="navbar-item brand-text" to="/">
-                  Admin
+                Teacher Portal
                 </Link>
 
 
@@ -758,7 +768,7 @@ else if(um===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -858,7 +868,7 @@ else if(vc===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -931,19 +941,23 @@ else if(vc===true)
             <form id = "form">
             <div>
             <br/> <br/> 
+            <div className = "flexi"> 
+              <div>
           <input
             placeholder="Class"
            type="text" 
            onChange={(e) => setcls(e.target.value)}
          />
-          <> </>
+          </div>
+          <div>
          <input
 
            type="text" 
            placeholder = "section"
-           onChange={(e) => setsection(e.target.value)}
+           value={section}
+           onChange={(e) => setsection(e.target.value.toUpperCase())}
          />
-         <> </>
+         </div></div>
          </div>
          </form>
          {sstudent.map(({ card, id}) => {
@@ -1004,7 +1018,7 @@ else if(ar==true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+              Teacher Portal
               </Link>
 
 
@@ -1080,15 +1094,17 @@ else if(ar==true)
           <input
             placeholder="student id"
            type="text" 
-           onChange={(e) => setas(e.target.value)}
+           value={as}
+           onChange={(e) => setas(e.target.value.toUpperCase())}
          />
           <> </>
     
          <> </>
          </div>
          </form>
-
-         <a  className="is-active">PRESNT </a>
+<div className ="atflex"> 
+  <div>
+         <a  className="is-active">PRESENT </a>
          {sattd.map(({ attd, id}) => {
       
             if(as===attd.student_id )
@@ -1113,6 +1129,8 @@ else if(ar==true)
           }
           )}
           <br/>
+          </div>
+          <div>
 <a  className="is-active">ABSENT </a>
         {sattd.map(({ attd, id}) => {
       
@@ -1135,12 +1153,14 @@ else if(ar==true)
        }
       }
       d=a+p
-      console.log(a,p,d)
+    
       
     }
     )}
+    </div></div>
 
     <br/><br/>
+    <div className = "graph">
          <VerticalBarGraph
   data={[p, a, d]}
   labels={['Present', 'Absent', 'Days']}
@@ -1158,7 +1178,9 @@ else if(ar==true)
   style={{
     paddingVertical: 10
   }}
+
 />
+</div>
             </div>
          
           </div>
@@ -1174,6 +1196,10 @@ else if(ar==true)
 
 else if(va===true)
 {
+  var p = 0;
+  var d=0;
+  var a=0;
+ 
   return (
     <div>
         <div>
@@ -1193,7 +1219,7 @@ else if(va===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -1224,9 +1250,9 @@ else if(va===true)
                   General
                 </p>
                 <ul className="menu-list">
-                <li onClick = {()=>setar(false)}><a>Dashboard</a></li>
+                <li onClick = {()=>setva(false)}><a>Dashboard</a></li>
                   <li onClick = {toggle1}><a >Search Student</a></li>
-                  <li onClick = {toggle7}><a>View My Attendance</a></li>
+                  <li onClick = {toggle7}><a  className="is-active"  >View My Attendance</a></li>
           
                 </ul>
                 <p className="label">
@@ -1242,7 +1268,7 @@ else if(va===true)
                       <li><a   onClick = {toggle3}>Add Assignment</a></li>
                       <li><a  onClick =  {toggle4}>Upload Marks</a></li>
                       <li><a   onClick = {toggle5}>View Class</a></li>
-                      <li><a   className="is-active" onClick =  {toggle6}>View Attendance Record</a></li>
+                      <li><a  onClick =  {toggle6}>View Attendance Record</a></li>
                     </ul>
                   </li>
                   
@@ -1269,18 +1295,20 @@ else if(va===true)
           <input
             placeholder="student id"
            type="text" 
-           onChange={(e) => setas(e.target.value)}
-         />
+           value= {teacher.staff_id.toUpperCase()}
+          disabled = "true"
+         /> 
           <> </>
     
          <> </>
          </div>
          </form>
+<div className ="atflex">
+  <div>
+         <a  className="is-active">PRESENT </a>
+         {sfattd.map(({ attd, id}) => {
 
-         <a  className="is-active">PRESNT </a>
-         {sattd.map(({ attd, id}) => {
-      
-            if(as===attd.student_id )
+            if(teacher.staff_id===attd.staff_id )
             {
              if(attd.present=="yes")
              {
@@ -1302,10 +1330,12 @@ else if(va===true)
           }
           )}
           <br/>
-<a  className="is-active">ABSENT </a>
-        {sattd.map(({ attd, id}) => {
+          </div>
+          <div>
+    <a  className="is-active">ABSENT </a>
+        {sfattd.map(({ attd, id}) => {
       
-      if(as===attd.student_id )
+      if(teacher.staff_id===attd.staff_id )
       {
        if(attd.present=="no")
        {
@@ -1324,12 +1354,14 @@ else if(va===true)
        }
       }
       d=a+p
-      console.log(a,p,d)
+    
       
     }
     )}
-
+    </div>
+</div>
     <br/><br/>
+    <div className ="graph">
          <VerticalBarGraph
   data={[p, a, d]}
   labels={['Present', 'Absent', 'Days']}
@@ -1348,6 +1380,7 @@ else if(va===true)
     paddingVertical: 10
   }}
 />
+</div>
             </div>
          
           </div>
@@ -1379,7 +1412,7 @@ else if(va===true)
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item brand-text" to="/">
-                Admin
+                Teacher Portal
               </Link>
 
 
@@ -1412,7 +1445,7 @@ else if(va===true)
                 <ul className="menu-list">
                   <li><a >Dashboard</a></li>
                   <li onClick = {toggle1}><a>Search Student</a></li>
-                  <li className="is-active" onClick = {toggle6}><a>View My Attendance</a></li>
+                  <li className="is-active" onClick = {toggle7}><a>View My Attendance</a></li>
                 </ul>
                 <p className="label">
                   Administration
@@ -1462,7 +1495,6 @@ else if(va===true)
               </section>
 
               
-              <button className = "view_att">View Attendance</button>
 
 
               <section className="info-tiles">

@@ -34,12 +34,12 @@ function AddStaff() {
             
       return db
         .collection("staff")
-        .doc(id)
+        .doc(id.toUpperCase())
         .set({
           sf_aadhar_no: aadhar,
-          job_id:jid,
+          job_id:jid.toUpperCase(),
           sf_name: fname+" "+ mname+" "+lname,
-          staff_id: id,
+          staff_id: id.toUpperCase(),
           salary:salary,
           address: address,
           date_of_joining:doj,
@@ -106,8 +106,9 @@ function AddStaff() {
                   <input
                       required="true"
                     type="text"
+                    value={id}
                     placeholder="Staff Id"
-                    onChange={(e) => setId(e.target.value)}
+                    onChange={(e) => setId(e.target.value.toUpperCase())}
                   />
                    <input
                     required="true"

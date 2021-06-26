@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import AddStudent from './AddStudent'
 import TeacherHome from './TeacherHome'
 import AdminHome from './AdminHome'
+import StudentHome from "./StudentHome";
 
 
 function Login() {
@@ -188,12 +189,17 @@ function Login() {
         {
         
           // student
-          auth.signOut();
+        
           return(
-            <div>{
-              
-              user.email
-            }</div>
+            
+            <Router>
+            <Switch>
+              <Route exact path="/" component={StudentHome}>
+                <StudentHome user={user} />
+              </Route>
+            </Switch>
+            </Router>
+           
           )
         }
       }
